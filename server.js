@@ -1,0 +1,25 @@
+const express = require('express');
+const app = express();
+const http = require('http');
+const routers = require('./routers');
+const cors = require('cors');
+const mongoose = require('mongoose');
+const socket = require('./managers/socket');
+
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(cors());
+routers(app);
+
+const server = http.createServer(app);
+const PORT = 3000;
+mongoose.connect('mongodb://localhost/nodejs-course', {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useFindAndModify: false,
+    useCreateIndex: true
+}).then(
+    socket(server),
+    server.listen(PORT)
+);
