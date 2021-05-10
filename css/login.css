@@ -1,0 +1,9 @@
+.loginBlock {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    flex-wrap: wrap;
+}
+.loginBlock input {
+    margin: 5px 0;
+}

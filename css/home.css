@@ -1,0 +1,30 @@
+h1 {
+    display: inline-block;
+    margin: 0 10px 0 0;
+}
+.userWelcome {
+    display: block;
+    margin-bottom: 10px;
+}
+.postBlock {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-content: flex-start;
+    border: 1px solid black;
+    max-width: 254px;
+    padding: 5px;
+    margin: 10px 0;
+}
+.postBlock input {
+    margin: 5px 0;
+}
+.searchBlock {
+}
+.friendsConteiner {
+    border: 1px solid black;
+    max-width: 254px;
+    padding: 5px;
+    margin: 10px 0;
+
+}

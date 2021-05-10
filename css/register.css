@@ -1,0 +1,9 @@
+.registerBlock {
+    display: flex;
+    flex-direction: column;
+    align-content: flex-start;
+    flex-wrap: wrap;
+}
+.registerBlock input {
+    margin: 5px 0;
+}
