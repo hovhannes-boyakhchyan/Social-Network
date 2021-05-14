@@ -2,6 +2,7 @@ import { initSession } from "../api/authFetch.js";
 import { addNewPost } from "../api/addNewPost.js";
 import { search } from "../api/home.js";
 import { sentFriendRequest } from "../api/home.js";
+import { getCurrentUser } from "../api/getCurrentUser.js";
 
 
 //initSession
@@ -23,11 +24,12 @@ window.addEventListener('load', async () => {
         logaut();
     }
 });
-document.querySelector('.logout').addEventListener('click', logaut);
+document.querySelector('.logoutBtn').addEventListener('click', logaut);
 function logaut() {
     localStorage.removeItem('token');
     location.href = '/login.html';
 }
+
 
 // Post
 document.querySelector('.postBtn').addEventListener('click', async () => {
@@ -123,7 +125,61 @@ function showFriends(currentUser) {
         friendsConteiner.append(friendBlock);
     });
 }
+async function showSentFriendRequest() {
+    const currentUser = await getCurrentUser();
+    if (currentUser.success) {
+        let notifications = document.querySelector('.notifications');
+        let showNotification = false;
 
+        currentUser.data.friendRequest.forEach(user => {
+            if (user) {
+                showNotification = true;
+                const div = document.createElement('div');
+
+                const a = document.createElement('a');
+                a.append(`${user.name} ${user.surname} `);
+                a.href = `http://127.0.0.1:5500/profile.html?user=${user['_id']}`;
+                div.append(a);
+
+                const friendRequestBtn = document.createElement('button');
+                console.log(currentUser);
+                console.log(user);
+                if (currentUser.data.sentFriendRequest.includes(user['_id'])) {
+                    friendRequestBtn.innerHTML = 'Requested';
+                } else if (currentUser.data.friends.some(friend => friend.friendId === user['_id'])) {
+                    friendRequestBtn.innerHTML = 'Unfriend';
+                } else {
+                    friendRequestBtn.innerHTML = 'Confirm';
+                }
+
+                friendRequestBtn.addEventListener('click', async () => {
+                    const response = await sentFriendRequest(user['_id']);
+                    if (response.success) {
+                        friendRequestBtn.innerHTML = response.message;
+                        const friendRequest = document.querySelector('.notifications div');
+                        friendRequest.querySelector('button').remove();
+                        document.querySelector('.notifications h4').remove();
+                        const friedsConteiner = document.querySelector('.friendsConteiner');
+
+                        const friendBlock = document.createElement('div');
+                        friendBlock.append(friendRequest);
+                        friedsConteiner.append(friendBlock);
+                    }
+                });
+                div.append(friendRequestBtn);
+                notifications.append(div);
+            }
+            if (showNotification) {
+                const h4 = document.createElement('h4');
+                h4.innerHTML = 'Sent you a friend request';
+                document.querySelector('.notifications p').after(h4);
+            }
+        });
+
+
+    }
+}
+showSentFriendRequest();
 // socket
 const client = io.connect('http://localhost:3000', {
     auth: {

@@ -6,21 +6,37 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profile</title>
+    <link rel="stylesheet" href="./css/profile.css">
 </head>
 
 <body>
     <div class="wrapper">
-        <div class="container">
-            <div class="user_info">
-                <div class="user_container">
+        <header class="header">
+            <div class="container">
+                <div class="header_fix">
+                    <span class="homePageBtn">Home</span>
+                    <span class="logOutBtn">LogOut</span>
+                </div>
+                <div class="user_block">
                     <div class="avatar">
-                        <img src="../backend/uploads/images/avatar-1619167557390.png" alt="Avatar">
+                        <img src="./img/user.png" alt="avatar">
                     </div>
-                    <h3 class="name_surname">Hovhannes Boyakhchyan</h3>
+                    <h4 class="name_surname"></h4>
+                </div>
+                <div class="btn_block">
+                    <button class="friendRequestBtn btn"></button>
+                    <button class="messageBtn btn">message</button>
                 </div>
             </div>
-        </div>
+        </header>
+
+        <main>
+
+
+        </main>
+        <footer></footer>
     </div>
+
     <script type="module" src="./js/pages/profile.js"></script>
 </body>
 
