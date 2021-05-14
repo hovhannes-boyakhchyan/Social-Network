@@ -44,7 +44,10 @@ class UsersCtrl {
         if (!await Users.exists({ _id: id })) {
             throw new AppError('user not found', 403);
         }
-        return Users.findById(id);
+        return Users.findById(id).populate({
+            path: 'friendRequest',
+            select: 'name surname email image'
+        });
     }
     async getOne(email) {
         if (!await Users.exists({ email: email })) {

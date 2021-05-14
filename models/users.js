@@ -10,7 +10,7 @@ const User = new Schema({
     email: String,
     password: String,
 
-    verify: { type: Boolean, default: true },
+    verify: { type: Boolean, default: false },
     forgotPass: String,
 
     friends: [{
