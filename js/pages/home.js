@@ -180,13 +180,3 @@ async function showSentFriendRequest() {
     }
 }
 showSentFriendRequest();
-// socket
-const client = io.connect('http://localhost:3000', {
-    auth: {
-        token: localStorage.getItem('token')
-    }
-});
-
-client.emit("new message", {
-
-});

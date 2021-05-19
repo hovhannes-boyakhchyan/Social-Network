@@ -14,30 +14,77 @@
         <header class="header">
             <div class="container">
                 <div class="header_fix">
-                    <span class="homePageBtn">Home</span>
-                    <span class="logOutBtn">LogOut</span>
+                    <div>
+                        <span class="homePageBtn">Home</span>
+                    </div>
+                    <div>
+                        <span class="user_name"></span>
+                        <span class="logOutBtn">LogOut</span>
+                    </div>
                 </div>
                 <div class="user_block">
                     <div class="avatar">
-                        <img src="./img/user.png" alt="avatar">
+                        <img src="./img/icon/user.png" alt="avatar">
                     </div>
                     <h4 class="name_surname"></h4>
                 </div>
                 <div class="btn_block">
-                    <button class="friendRequestBtn btn"></button>
-                    <button class="messageBtn btn">message</button>
+                    <button class="friendRequestBtn btn">Add friend</button>
+                    <button class="openMessengerBtn btn">message</button>
                 </div>
             </div>
         </header>
 
         <main>
+            <div class="messenger">
+                <div id="form" class="message_container">
+                    <div class="message_header">
+                        <div>
+                            <img src="./img/icon/back-arrow.svg" class="back_to_chat_list_btn" alt="backArrow">
+                            <span class="recipient_user_info">Messenger</span>
+                        </div>
+                        <span class="close__btn"></span>
+                    </div>
+                    <div class="message_body">
+                        <div class="chat_list">
+                            <!-- <div class="chat_list_user">
+                                <p class="chat_user_name"></p>
+                            </div> -->
+                        </div>
+                        <span></span>
+                        <!-- span@ space-betweeni hamar vorpes arajin element-->
+                        <div class="chat">
+                            <!-- <div class="recipient_user"></div>
+                            <div class="sender_user"></div> -->
+                        </div>
+                    </div>
+                    <div class="writing__tools">
+                        <div class="show_picture">
+                            <span class="delete_picture"></span>
+                            <div class="chosen_picture"></div>
+                        </div>
+                        <div class="writing">
+                            <label for="file" class="file">
+                                <input type="file" name="file" id="file" accept=".jpg, .png, .gif">
+                            </label>
+                            <input type="text" name="text" class="write_message"
+                                placeholder="Մուտքագրեք հաղորդագրությունը">
+                            <button class="send__message"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
 
         </main>
         <footer></footer>
     </div>
 
+    <script src="https://cdn.socket.io/4.0.2/socket.io.min.js"
+        integrity="sha384-Bkt72xz1toXkj/oEiOgkQwWKbvNYxTNWMqdon3ejP6gwq53zSo48nW5xACmeDV0F"
+        crossorigin="anonymous"></script>
     <script type="module" src="./js/pages/profile.js"></script>
+    <script type="module" src="./js/pages/message.js"></script>
 </body>
 
 </html>

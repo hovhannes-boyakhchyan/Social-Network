@@ -33,8 +33,7 @@ window.addEventListener('load', async () => {
     } else {
         logaut();
     }
-
-
+    document.querySelector('.header_fix .user_name').innerHTML = `${currentUser.data.name} ${currentUser.data.surname}`;
 });
 
 document.querySelector('.logOutBtn').addEventListener('click', logaut);
