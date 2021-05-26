@@ -3,6 +3,7 @@ import { addNewPost } from "../api/addNewPost.js";
 import { search } from "../api/home.js";
 import { sentFriendRequest } from "../api/home.js";
 import { getCurrentUser } from "../api/getCurrentUser.js";
+import { uploadAvatar } from "../api/uploadfetch.js";
 
 
 //initSession
@@ -15,6 +16,13 @@ window.addEventListener('load', async () => {
         if (response.success) {
             currentUser = response.data;
             document.querySelector('.userWelcome').innerHTML = `Hello ${response.data.name}`;
+
+            const avatar = document.querySelector('.avatar img');
+            if (response.data.image) {
+                avatar.src = `http://localhost:3000/uploads/images/${response.data.image}`;
+            }
+            avatar.style.display = 'block';
+
             showFriends(currentUser);
         } else {
             logaut();
@@ -180,3 +188,18 @@ async function showSentFriendRequest() {
     }
 }
 showSentFriendRequest();
+
+document.querySelector('#avatar').addEventListener('change', async (e) => {
+    const file = e.target.files[0];
+    if (!["image/jpeg", "image/png", "image/gif"].includes(file.type)) {
+        alert("Թույլատրվում է միյաին նկար");
+        e.target.value = "";
+        return;
+    }
+    const formData = new FormData();
+    formData.append('avatar', file);
+    const response = await uploadAvatar(formData);
+    if (response.success) {
+        document.querySelector('.avatar img').src = `http://localhost:3000/uploads/images/${response.data.image}`;
+    }
+});

@@ -1,5 +1,6 @@
 import { getUser } from "../api/profileFetch.js";
 import { getCurrentUser } from "../api/getCurrentUser.js";
+// import { imageMessage } from "../api/uploadFetch.js";
 
 let openMessengerBtn = document.querySelector(".openMessengerBtn");
 let close__btn = document.querySelector(".close__btn");
@@ -57,30 +58,72 @@ window.addEventListener('load', async () => {
     sendMessageBtn.addEventListener('click', to_send);
     async function to_send(e) {
         const write_message = document.querySelector('.write_message');
-        if (write_message.value) {
-            messenger.classList.add("_sending");
+        const file = fileInput.files[0];
 
-            client.emit("new message", {
-                to: this.getAttribute('userId'),
-                message: write_message.value
-            });
+        if (write_message.value || file) {
+            messenger.classList.add("_sending");
+            if (file) {
+                const reader = new FileReader();
+                reader.readAsDataURL(file);
+                reader.onload = e => {
+                    client.emit(
+                        "new message",
+                        {
+                            to: this.getAttribute('userId'),
+                            message: write_message.value,
+                            file: e.target.result
+                        },
+                        response => {
+                            if (response.status === 'ok') {
+                                to_chat();
+                                messenger.classList.remove("_sending");
+                            }
+                        }
+                    );
+                }
+                reader.onerror = () => {
+                    alert("Տեղի է ունեցել սխալ, նկարը չի բեռնվել...");
+                }
+            } else {
+                client.emit(
+                    "new message",
+                    {
+                        to: this.getAttribute('userId'),
+                        message: write_message.value,
+                    },
+                    response => {
+                        if (response.status === 'ok') {
+                            to_chat();
+                            messenger.classList.remove("_sending");
+                        }
+                    }
+                );
+            }
         }
-        to_chat();
-        messenger.classList.remove("_sending");
     }
 
     const chat = document.querySelector('.chat');
     client.on('new message', data => {
         if (data.to === currentUser.data['_id']) {
-            const div = document.createElement("div");
-            const p = document.createElement("p");
-            div.className = 'recipient_user';
-            p.innerHTML = data.message;
-            div.append(p);
-            chat.append(div);
-            write_message.value = "";
+            if (data.image) {
+                const div = document.createElement("div");
+                const img = document.createElement("img");
+                div.className = 'recipient_user';
+                img.src = `http://localhost:3000/uploads/images/${data.image}`;
+                div.append(img);
+                chat.append(div);
+                showUsersChatList(currentUser);
+            }
+            if (data.message) {
+                const div = document.createElement("div");
+                const p = document.createElement("p");
+                div.className = 'recipient_user';
+                p.innerHTML = data.message;
+                div.append(p);
+                chat.append(div);
+                showUsersChatList(currentUser);
+            }
             scrollDown();
-            showUsersChatList(currentUser);
         }
     });
 
@@ -116,25 +159,42 @@ window.addEventListener('load', async () => {
             chat.innerHTML = '';
             data.forEach(data => {
                 if (data.from === currentUser.data['_id']) {
-                    const div = document.createElement("div");
-                    const p = document.createElement("p");
-                    div.className = 'sender_user';
-                    p.innerHTML = data.message;
-                    div.append(p);
-                    chat.append(div);
-                    write_message.value = "";
-                    scrollDown();
+                    if (data.image) {
+                        const div = document.createElement("div");
+                        const img = document.createElement("img");
+                        div.className = 'sender_user';
+                        img.src = `http://localhost:3000/uploads/images/${data.image}`;
+                        div.append(img);
+                        chat.append(div);
+                    }
+                    if (data.message) {
+                        const div = document.createElement("div");
+                        const p = document.createElement("p");
+                        div.className = 'sender_user';
+                        p.innerHTML = data.message;
+                        div.append(p);
+                        chat.append(div);
+                    }
                 } else if (data.to === currentUser.data['_id']) {
-                    const div = document.createElement("div");
-                    const p = document.createElement("p");
-                    div.className = 'recipient_user';
-                    p.innerHTML = data.message;
-                    div.append(p);
-                    chat.append(div);
-                    write_message.value = "";
-                    scrollDown();
+                    if (data.image) {
+                        const div = document.createElement("div");
+                        const img = document.createElement("img");
+                        div.className = 'recipient_user';
+                        img.src = `http://localhost:3000/uploads/images/${data.image}`;
+                        div.append(img);
+                        chat.append(div);
+                    }
+                    if (data.message) {
+                        const div = document.createElement("div");
+                        const p = document.createElement("p");
+                        div.className = 'recipient_user';
+                        p.innerHTML = data.message;
+                        div.append(p);
+                        chat.append(div);
+                    }
                 }
             });
+            scrollDown();
         }
     });
 
@@ -149,7 +209,10 @@ window.addEventListener('load', async () => {
 
     function to_chat() {
         if (fileInput.files.length != 0) {
-            sender_user.append(document.querySelector(".chosen_picture img"));
+            const div = document.createElement("div");
+            div.className = 'sender_user';
+            div.append(document.querySelector(".chosen_picture img"));
+            chat.append(div);
             delete_picture();
             scrollDown();
         }
@@ -166,18 +229,26 @@ window.addEventListener('load', async () => {
         write_message.focus();
     }
 
+    let timer;
+    let scrolled = message_body.scrollTop;
     function scrollDown() {
-        document.querySelector(".message_body").scrollTo(0, message_body.scrollHeight);
+        if (scrolled < message_body.scrollHeight) {
+            scrolled += 10;
+            document.querySelector(".message_body").scrollTo(0, scrolled);
+            timer = setTimeout(scrollDown, 3);
+        } else {
+            clearTimeout(timer);
+            document.querySelector(".message_body").scrollTo(0, message_body.scrollHeight);
+        }
     }
-
 
 
     // ------------------------file-----------------------------
 
     fileInput.addEventListener("change", readFile);
 
-    function readFile() {
-        let file = this.files[0];
+    async function readFile() {
+        const file = this.files[0];
         if (!["image/jpeg", "image/png", "image/gif"].includes(file.type)) {
             alert("Թույլատրվում է միյաին նկար");
             fileInput.value = "";
@@ -196,6 +267,7 @@ window.addEventListener('load', async () => {
         reader.onerror = () => {
             alert("Տեղի է ունեցել սխալ, նկարը չի բեռնվել...");
         }
+
     }
 
     delete_picture_btn.addEventListener("click", delete_picture);

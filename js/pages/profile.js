@@ -12,6 +12,9 @@ window.addEventListener('load', async () => {
     const user = await getUser(userId);
     if (user.success) {
         document.querySelector('.user_block h4').innerHTML = `${user.data.name} ${user.data.surname}`;
+        if (user.data.image) {
+            document.querySelector('.user_block .avatar img').src = `http://localhost:3000/uploads/images/${user.data.image}`;
+        }
         const friendRequestBtn = document.querySelector('.friendRequestBtn');
 
         if (user.data.friendRequest.includes(currentUser.data['_id'])) {
@@ -34,6 +37,9 @@ window.addEventListener('load', async () => {
         logaut();
     }
     document.querySelector('.header_fix .user_name').innerHTML = `${currentUser.data.name} ${currentUser.data.surname}`;
+    if (currentUser.data.image) {
+        document.querySelector('.header_fix .currentUser_img img').src = `http://localhost:3000/uploads/images/${currentUser.data.image}`;
+    }
 });
 
 document.querySelector('.logOutBtn').addEventListener('click', logaut);

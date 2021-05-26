@@ -137,7 +137,6 @@ input {outline-style: none;}
     align-items: flex-end;
 }
 .chat img {
-    max-height: 100px;
     max-width: 150px;
     margin: 8px 0;
 }
