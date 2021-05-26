@@ -1,6 +1,5 @@
 import { getUser } from "../api/profileFetch.js";
 import { getCurrentUser } from "../api/getCurrentUser.js";
-// import { imageMessage } from "../api/uploadFetch.js";
 
 let openMessengerBtn = document.querySelector(".openMessengerBtn");
 let close__btn = document.querySelector(".close__btn");
@@ -267,7 +266,6 @@ window.addEventListener('load', async () => {
         reader.onerror = () => {
             alert("Տեղի է ունեցել սխալ, նկարը չի բեռնվել...");
         }
-
     }
 
     delete_picture_btn.addEventListener("click", delete_picture);
