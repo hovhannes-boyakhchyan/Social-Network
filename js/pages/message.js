@@ -106,9 +106,10 @@ window.addEventListener('load', async () => {
         if (data.to === currentUser.data['_id']) {
             if (data.image) {
                 const div = document.createElement("div");
-                const img = document.createElement("img");
                 div.className = 'recipient_user';
+                const img = new Image();
                 img.src = `http://localhost:3000/uploads/images/${data.image}`;
+                img.onload = () => scrollDown();
                 div.append(img);
                 chat.append(div);
                 showUsersChatList(currentUser);
@@ -122,7 +123,6 @@ window.addEventListener('load', async () => {
                 chat.append(div);
                 showUsersChatList(currentUser);
             }
-            scrollDown();
         }
     });
 
@@ -160,9 +160,10 @@ window.addEventListener('load', async () => {
                 if (data.from === currentUser.data['_id']) {
                     if (data.image) {
                         const div = document.createElement("div");
-                        const img = document.createElement("img");
                         div.className = 'sender_user';
+                        const img = new Image();
                         img.src = `http://localhost:3000/uploads/images/${data.image}`;
+                        img.onload = () => scrollDown();
                         div.append(img);
                         chat.append(div);
                     }
@@ -177,9 +178,10 @@ window.addEventListener('load', async () => {
                 } else if (data.to === currentUser.data['_id']) {
                     if (data.image) {
                         const div = document.createElement("div");
-                        const img = document.createElement("img");
                         div.className = 'recipient_user';
+                        const img = new Image();
                         img.src = `http://localhost:3000/uploads/images/${data.image}`;
+                        img.onload = () => scrollDown();
                         div.append(img);
                         chat.append(div);
                     }
@@ -193,7 +195,6 @@ window.addEventListener('load', async () => {
                     }
                 }
             });
-            scrollDown();
         }
     });
 
