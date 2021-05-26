@@ -11,7 +11,8 @@ class MessagesCtrl {
         return new Messages({
             from: data.currentUser,
             to: data.userTo,
-            message: data.message
+            message: data.message,
+            image: data.image
         }).save();
     }
     async getMessages(users) {

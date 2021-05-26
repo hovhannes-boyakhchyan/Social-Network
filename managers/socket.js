@@ -1,5 +1,9 @@
 const TokenManager = require('../managers/token_manager');
 const MessageCtrl = require('../controllers/messages-ctrl');
+const AppError = require('../managers/app_error');
+const fs = require('fs');
+const path = require('path');
+
 
 const onlineUsers = new Map();
 module.exports = (server) => {
@@ -30,12 +34,29 @@ module.exports = (server) => {
     io.on('connection', client => {
         onlineUsers.set(client.userId, client);
 
-        client.on('new message', async data => {
-            const message = await MessageCtrl.send({
+        client.on('new message', async (data, cb) => {
+            const messageData = {
                 currentUser: client.userId,
                 userTo: data.to,
-                message: data.message
-            });
+                message: data.message ? data.message : undefined,
+                image: undefined
+            }
+            if (data.file) {
+                //upload image
+                try {
+                    const base64Data = data.file.replace(/^data:image\/(jpeg;|jpg;|png;|gif;)base64,/, "");
+                    const buffer = Buffer.from(base64Data, 'base64');
+                    let imageName = `msgImage-${Date.now()}.png`;
+                    const writeStream = fs.createWriteStream(path.join(__homedir, 'uploads', 'images', imageName));
+                    writeStream.write(buffer);
+                    messageData.image = imageName;
+                } catch (e) {
+                    throw new AppError('image not uploaded', 401);
+                }
+            }
+            const message = await MessageCtrl.send(messageData);
+            cb({ status: "ok" });
+
             if (onlineUsers.has(data.to)) {
                 const user = onlineUsers.get(data.to);
                 user.emit('new message', message);

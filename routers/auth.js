@@ -1,7 +1,6 @@
 const express = require('express');
 const AuthCtrl = require('../controllers/auth-ctrl');
 const UsersCtrl = require('../controllers/users-ctrl');
-const upload = require('../middleware/upload');
 const { body } = require('express-validator');
 const validationResult = require('../middleware/validationResult');
 const responseHandler = require('../middleware/responseHandler');
@@ -11,7 +10,6 @@ const router = express.Router();
 
 router.post(
     '/register',
-    upload.single('avatar'),
     body('name').exists(),
     body('surname').exists(),
     body('email').isEmail(),
@@ -20,7 +18,7 @@ router.post(
     validationResult,
     async (req, res) => {
         try {
-            const user = await AuthCtrl.register({ ...req.body, image: req.file });
+            const user = await AuthCtrl.register(req.body);
             res.onSuccess(user, "user created");
         } catch (e) {
             res.onError(e);
